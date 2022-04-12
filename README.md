@@ -20,15 +20,15 @@ Cartridges with code to do specific tasks:
 
 ## How To Use
 
-+ **To try the cartridges on the web:**
+* **To try the cartridges on the web:**
 
-![demo of how to access the cartridges on the web](/gifs/seeInWeb.gif)
+  ![demo of how to access the cartridges on the web](/gifs/seeOnWeb.gif)
 
-  **1.** Go to [my page][my TIC-80 page] on the [official TIC-80 site](https://tic80.com/)
+  **1.** Go to [my page][my TIC-80 page] on the [official TIC-80 site](https://tic80.com/).
 
-  **2.** Then click on the chosen cart and enjoy it
+  **2.** Then click on the chosen cart and enjoy it.
 
-+ **To download the cartridges and use their code:**
+* **To download the cartridges and use their code:**
 
   **1.** [Download](https://tic80.com/create) and install the TIC-80 on your device.
 
@@ -40,9 +40,11 @@ Cartridges with code to do specific tasks:
 
   **4.** Done. Now you can load and alter the cartridges for your goals.
 
+  ![demo of how to access the cartridges on the TIC-80](/gifs/seeOnTic.gif)
+
 [my TIC-80 page]:https://tic80.com/dev?id=7293
 
-## More info
+## See also
 
 [TIC-80 wiki](https://github.com/nesbox/TIC-80/wiki)
 
