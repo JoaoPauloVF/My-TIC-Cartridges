@@ -2,16 +2,18 @@
 -- author:  JoaoPauloVF
 -- desc:    a circles animation generated randomly
 -- script:  lua
--- input:   keyboard
+-- input:   keyboard, mouse
 -- palette: SWEETIE-16 https://github.com/nesbox/TIC-80/wiki/palette#sweetie-16
 
---Constants and Variables : line 16
---Position Map            : line 31
---Circle Floating Class   : line 58
---Dot Floating Class      : line 125
---Instances Initialization: line 163
-
-math.randomseed(tstamp())
+--Constants and Variables : line 18
+--Function getSequence()  : line 33
+--Position Map            : line 49
+--Circle Floating Class   : line 52
+--Dot Floating Class      : line 105
+--Initialization functions: line 120
+--Instances Initialization: line 169
+--TIC()                   : line 173
+math.randomseed(tstamp()*10000)
 
 --CONSTANTS AND VARIABLES
 SCREEN_W = 240
@@ -28,63 +30,35 @@ countDots = 100 --Dots amount. Dots appear behind the circles.
 circles = {}
 dots = {}
 
+function getSequence(f, min, max, step)
+  local seq = {}
+  step = step or 1
+  
+  if not(max) then
+    min, max = max, min
+    min = 1
+  end
+  
+  for num=min, max, step do
+    table.insert(seq, f(num))
+  end
+  
+  return seq
+end
+
 POSITIONS = {} --It keeps all positions on the screen, and if they are occupied. See below.
 
-function initializePositionsMap()
-  for i=0, SCREEN_H-1 do
-    local xPositions = {}
-    for j=0, SCREEN_W-1 do
-      --false: not occupied
-      --true : occupied
-      xPositions[j] = false 
-    end
-    POSITIONS[i] = xPositions
-  end
-end
-
---Check whether still there are free positions.
-function positionsIsFull()
-  for i=0, #POSITIONS do
-    for j=0, #POSITIONS[i] do
-      if not(POSITIONS[i][j]) then
-        return false
-      end
-    end
-  end
-  
-  return true
-end
 
 --FLOATING CIRCLE CLASS
-function FloatingCircle(positionsMap, positionsIsFull, backgroundColor)
+function FloatingCircle(x, y, backgroundColor)
   local self = {}
   
-  local yRange = #positionsMap
-  local xRange = #positionsMap[0]
+  self.y = y
+  self.x = x
   
-  self.y = math.random(yRange)
-  self.x = math.random(xRange)
+  self.maxRadius = math.random(20, 30)
   
-  --Try a different position if the current one is already occupied.
-  --If there aren't free position, ignore it.
-  while not(positionsIsFull()) and positionsMap[self.y][self.x] do
-    self.y = math.random(yRange)
-    self.x = math.random(xRange)
-  end
-  
-  self.maxRadius = not(positionsIsFull()) 
-    and math.random(10, 40)
-    or math.random(6, 10)
   self.radius = 0
-  
-  --Set the own position as occupied.
-  if not(positionsIsFull()) then
-    for i=math.max(0, self.y-self.maxRadius*2), math.min(yRange, self.y+self.maxRadius*2) do
-      for j=self.x-self.maxRadius*2, self.x+self.maxRadius*2 do
-        positionsMap[i][j] = true
-      end
-    end
-  end
   
   self.yDirs = {1, -1}
   self.currY = y
@@ -102,7 +76,13 @@ function FloatingCircle(positionsMap, positionsIsFull, backgroundColor)
     
     self.radius = self.radius < self.maxRadius
       and self.radius + 2
-      or self.radius 
+      or self.radius
+      
+    local mX, mY, pressed = mouse()
+    local dist = math.sqrt((mX-self.x)^2+(mY-self.y)^2)
+    if dist < self.maxRadius and pressed and self.radius >=0 then
+      self.radius = self.radius - 4
+    end 
   end
   
   self.render = function()
@@ -137,13 +117,39 @@ function FloatingDot()
   return self
 end
 
+--Initialization functions
+function initializePositionsMap()
+  local xMap = getSequence(
+    function(num)return num end,
+    0, SCREEN_W, 32
+  )
+  local yMap = getSequence(
+    function(num)return num end,
+    0, SCREEN_H, 32
+  ) 
+  for i=1, #yMap do
+    for j=1, #xMap do
+      table.insert(
+        POSITIONS,
+        {x=xMap[j], y=yMap[i]}
+      )
+    end
+  end
+end
 
 function initializeCircles(countCircles)
   local pile = {}
   
   for i=1, countCircles do
-    c = FloatingCircle(POSITIONS, positionsIsFull, BACKGROUND) 
+    if #POSITIONS == 0 then break end
+    
+    local posIndex = math.random(1, #POSITIONS)
+    local pos = POSITIONS[posIndex]
+    
+    c = FloatingCircle(pos.x, pos.y, BACKGROUND)     
     table.insert(pile, c)
+    
+    table.remove(POSITIONS, posIndex)
   end
   
   return pile

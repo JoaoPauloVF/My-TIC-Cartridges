@@ -2,9 +2,13 @@
 
 This cartridge consists of a small animation loop generated randomly.
 
+![gif of the cartridge demo.](demo.gif)
+
 ## Control
 
 Press SPACE or ENTER to generate another animation with different circles.
+
+Press the mouse on a circle to reduce it.
 
 ## How to use
 
