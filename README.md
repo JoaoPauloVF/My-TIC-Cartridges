@@ -17,6 +17,7 @@ Cartridges with code to do specific tasks:
 
 * [Print Alignment Function](cartridges/PrintAlign/)
 * [Timer](cartridges/Timer/)
+* [getSequence Function](cartridges/sequence/)
 
 ## How To Use
 
