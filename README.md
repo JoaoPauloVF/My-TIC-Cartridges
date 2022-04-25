@@ -50,3 +50,7 @@ Cartridges with code to do specific tasks:
 [TIC-80 wiki](https://github.com/nesbox/TIC-80/wiki)
 
 [Console commands](https://github.com/nesbox/TIC-80/wiki/Console#available-commands)
+
+## License
+
+[MIT](LICENSE)
