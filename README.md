@@ -1,6 +1,6 @@
 # My TIC Cartridges
 
-My small projects made in the [TIC-80 fantasy](https://github.com/nesbox/TIC-80#about) console.
+My small projects made in the [TIC-80][TIC-80 site] fantasy console.
 
 ## Projects List
 
@@ -25,7 +25,7 @@ Cartridges with code to do specific tasks:
 
   ![demo of how to access the cartridges on the web](/gifs/seeOnWeb.gif)
 
-  **1.** Go to [my page][my TIC-80 page] on the [official TIC-80 site](https://tic80.com/).
+  **1.** Go to [my page][my TIC-80 page] on the [official TIC-80 site][TIC-80 site].
 
   **2.** Then click on the chosen cart and enjoy it.
 
@@ -43,13 +43,17 @@ Cartridges with code to do specific tasks:
 
   ![demo of how to access the cartridges on the TIC-80](/gifs/seeOnTic.gif)
 
+[TIC-80 site]:https://tic80.com/
+
 [my TIC-80 page]:https://tic80.com/dev?id=7293
 
 ## See also
 
+[TIC-80 GitHub repository](https://github.com/nesbox/TIC-80/)
+
 [TIC-80 wiki](https://github.com/nesbox/TIC-80/wiki)
 
-[Console commands](https://github.com/nesbox/TIC-80/wiki/Console#available-commands)
+[Console commands list](https://github.com/nesbox/TIC-80/wiki/Console#available-commands)
 
 ## License
 
