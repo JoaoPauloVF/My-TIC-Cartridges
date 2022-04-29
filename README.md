@@ -10,6 +10,7 @@ Cartridges focused on fun visual effects:
 
 * [Floating Circles](cartridges/floatingCircles/)
 * [Painter Snake](cartridges/PainterSnake/)
+* [Magnetic Pointer](cartridges/magneticPointer/)
 
 ### Functions
 
