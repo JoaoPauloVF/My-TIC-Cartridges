@@ -2,6 +2,8 @@
 
 My small projects made in the [TIC-80][TIC-80 site] fantasy console.
 
+![mini cartridge demo](cartridges/floatingCircles/demoResized.gif) ![mini cartridge demo](cartridges/Timer/demoResized.gif) ![mini cartridge demo](cartridges/PainterSnake/demoResized.gif) ![mini cartridge demo](cartridges/PrintAlign/coverResized.png) ![mini cartridge demo](cartridges/magneticPointer/demoResized.gif) ![mini cartridge demo](cartridges/sequence/demoResized.gif)
+
 ## Projects List
 
 ### Interactive Art
