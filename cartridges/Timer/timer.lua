@@ -3,6 +3,8 @@
 -- desc:   a function that creates timers for events in execution time
 -- script: lua
 -- input: keyboard
+-- license: MIT
+-- github: https://github.com/JoaoPauloVF/My-TIC-Cartridges#readme
 
 --[[
 SUMMARY(ctrl+f and search for the chapter)
@@ -160,221 +162,220 @@ DETAILS-2-4
 
 --5--COMPLETE FUNCTION----
 function newTimer()
-    local self = {}
+  local self = {}
+  
+  self.event = false
+  self.timeCount = false
+  
+  local current = 0        -- time in the current frame
+  local last = self.current-- time in the last frame
+  
+  self.count = function()
+    self.event = type(self.event) == "boolean" and self.event or false
     
-    self.event = false
-    self.timeCount = false
+    current = not(self.timeCount) and time() or self.timeCount 
+    last = self.event and last or current
     
-    local current = 0        -- time in the current frame
-    local last = self.current-- time in the last frame
-    
-    self.count = function()
-      self.event = type(self.event) == "boolean" and self.event or false
-      
-      current = not(self.timeCount) and time() or self.timeCount 
-      last = self.event and last or current
-      
-      return current - last  --time interval
-    end
-    
-    self.wait = function(starting, ending)  
-      if not(starting) then return false end
-      
-      ending = ending or math.huge
-      
-      return self.count() >= math.abs(starting) and self.count() <= math.abs(ending)
-    end
-    
-    self.waitFreq = function(frequency)
-      if frequency == 0 then return false end
-      
-      return self.count()%(frequency*2) > frequency
-    end
-    
-     
-    return self
+    return current - last  --time interval
   end
   
-  ----ONE-LINE FUNCTION-5-1-
-  --function newTimer()local a={};a.event=false;a.timeCount=false;local b=0;local c=a.b;a.count=function()a.event=type(a.event)=="boolean"and a.event or false;b=not(a.timeCount)and time()or a.timeCount;c=a.event and c or b;return b-c;end;a.wait=function(d, e)if not(d)then return false end;e=e or math.huge;return a.count()>=math.abs(d)and a.count()<=math.abs(e);end a.waitFreq=function(f)if f==0then return false end;return a.count()%(f*2)>f;end;return a;end
-  
-  
-  --This is just another custom function
-  --For more information: https://tic80.com/play?cart=2594
-  local function printAlign(text, x, y, alignX, alignY, color, fixed, scale, smallFont)
-    local x = x or 0
-    local y = y or 0
-    local alignX = alignX or "right"
-    local alignY = alignY or "bottom"
-    local color = color or 15
-    local fixed = fixed or false
-    local scale = scale or 1
-    local smallFont = smallFont or false
+  self.wait = function(starting, ending)  
+    if not(starting) then return false end
     
-    local font_h = 6 * scale
-    local font_w = print(text, 0, -font_h*scale, color, fixed, scale, smallFont)
+    ending = ending or math.huge
     
-    x = alignX=="right" and x or alignX=="center" and x - font_w//2 or alignX=="left" and x - font_w + 1*scale or x --if alignX is not any of the accepted values, x gets the default value from "right".
-    y = alignY=="bottom" and y or alignY=="middle" and y - font_h//2 or alignY=="top" and y - font_h + 1*scale or y --The same for alignY that y gets the value from "bottom".
-    
-    print(text, x, y, color, fixed, scale, smallFont)
+    return self.count() >= math.abs(starting) and self.count() <= math.abs(ending)
   end
   
+  self.waitFreq = function(frequency)
+    if frequency == 0 then return false end
+    
+    return self.count()%(frequency*2) > frequency
+  end
   
-  --Initialize the Timer
-  timer = newTimer()
+   
+  return self
+end
+
+----ONE-LINE FUNCTION-5-1-
+--function newTimer()local a={};a.event=false;a.timeCount=false;local b=0;local c=a.b;a.count=function()a.event=type(a.event)=="boolean"and a.event or false;b=not(a.timeCount)and time()or a.timeCount;c=a.event and c or b;return b-c;end;a.wait=function(d, e)if not(d)then return false end;e=e or math.huge;return a.count()>=math.abs(d)and a.count()<=math.abs(e);end a.waitFreq=function(f)if f==0then return false end;return a.count()%(f*2)>f;end;return a;end
+
+
+--This is just another custom function
+--For more information: https://tic80.com/play?cart=2594
+local function printAlign(text, x, y, alignX, alignY, color, fixed, scale, smallFont)
+  local x = x or 0
+  local y = y or 0
+  local alignX = alignX or "right"
+  local alignY = alignY or "bottom"
+  local color = color or 15
+  local fixed = fixed or false
+  local scale = scale or 1
+  local smallFont = smallFont or false
+  
+  local font_h = 6 * scale
+  local font_w = print(text, 0, -font_h*scale, color, fixed, scale, smallFont)
+  
+  x = alignX=="right" and x or alignX=="center" and x - font_w//2 or alignX=="left" and x - font_w + 1*scale or x --if alignX is not any of the accepted values, x gets the default value from "right".
+  y = alignY=="bottom" and y or alignY=="middle" and y - font_h//2 or alignY=="top" and y - font_h + 1*scale or y --The same for alignY that y gets the value from "bottom".
+  
+  print(text, x, y, color, fixed, scale, smallFont)
+end
+
+
+--Initialize the Timer
+timer = newTimer()
+--Internal use
+timerButtons = newTimer()
+
+--Variable for count the ticks/frames
+countTicks = 0
+
+--Others Variables
+WIDTH = 240
+HEIGHT = 136
+
+x = WIDTH * 0.05
+x2 = WIDTH * 0.95
+y = HEIGHT * 0.15
+
+yMargin = 10
+
+colorText = 12 --white
+background = 15 --dark gray
+
+eventInd = 1
+timeCountsInd = 1
+function TIC()
+		cls(background) 
+  
+  mouseX, mouseY, mousePressed = mouse()
+  
+  events = {
+    {mousePressed, "mousePressed"}, 
+    {btn(0), "btn(0)"}, 
+    {mouseX > WIDTH/2, "mouseX > 120"},
+    {key(48), "spacePressed"},
+    {not(btn(3)), "not(btn(3))"} 
+  }
+  timeCounts = {
+    {time(), 1000, "time()"},
+    {countTicks, 60, "frames/ticks"}
+  }
+  
+  --Update the current event
+  if btn(2) and timerButtons.wait(100) then
+    eventInd = math.max(1, eventInd - 1)
+  elseif btn(3) and timerButtons.wait(100)  then
+    eventInd = math.min(#events, eventInd + 1)
+  end
+  
+  --Update the current time count
+  if btnp(4, 0, 10) and timer.count() == 0 then
+    timeCountsInd = timeCountsInd == 1 and 2 or 1
+  end
+  
   --Internal use
-  timerButtons = newTimer()
+  timerButtons.event = not(btn(2) or btn(3))
   
-  --Variable for count the ticks/frames
-  countTicks = 0
+  --Update the attributes of the timer
+  timer.event = events[eventInd][1]
+  timer.timeCount = timeCounts[timeCountsInd][1]
   
-  --Others Variables
-  WIDTH = 240
-  HEIGHT = 136
+  --Show everthing: the event and the functions of the timer
+  print(
+    "<- Alter event ->",
+    x, y,
+    colorText
+  ) 
   
-  x = WIDTH * 0.05
-  x2 = WIDTH * 0.95
-  y = HEIGHT * 0.15
+  print(
+    events[eventInd][2], 
+    x, y+yMargin, 
+    colorText,
+    false,
+    2
+  )
   
-  yMargin = 10
+  print(
+    "Time in "..timeCounts[timeCountsInd][3]..": (Z to alter)", 
+    x, y+yMargin*3, 
+    colorText
+  )
+  printAlign(
+    string.format("%.2f", timer.count()), 
+    x2, y+yMargin*3, 
+    "left",
+    "botton",
+    colorText,
+    true
+  )
+    
+  print(
+    "Time >= 3 seconds: ", 
+    x, y+yMargin*4, 
+    colorText
+  )
+  printAlign(
+    tostring(timer.wait(timeCounts[timeCountsInd][2]*3)), 
+    x2, y+yMargin*4, 
+    "left",
+    "botton",
+    colorText
+  )
   
-  colorText = 12 --white
-  background = 15 --dark gray
+  print(
+    "6 seconds >= Time >= 3 seconds: ", 
+    x, y+yMargin*5, 
+    colorText
+  )
+  printAlign(
+    tostring(timer.wait(timeCounts[timeCountsInd][2]*3, timeCounts[timeCountsInd][2]*6)) , 
+    x2, y+yMargin*5, 
+    "left",
+    "botton",
+    colorText
+  )
+       
+  print(
+    "It is true every 1 second: ", 
+    x, y+yMargin*6, 
+    colorText
+  )
+  printAlign(
+    tostring(timer.waitFreq(timeCounts[timeCountsInd][2]*1)), 
+    x2, y+yMargin*6, 
+    "left",
+    "botton",
+    colorText
+  )
   
-  eventInd = 1
-  timeCountsInd = 1
-  function TIC()
-          cls(background) 
-    
-    mouseX, mouseY, mousePressed = mouse()
-    
-    events = {
-      {mousePressed, "mousePressed"}, 
-      {btn(0), "btn(0)"}, 
-      {mouseX > WIDTH/2, "mouseX > 120"},
-      {key(48), "spacePressed"},
-      {not(btn(3)), "not(btn(3))"} 
-    }
-    timeCounts = {
-      {time(), 1000, "time()"},
-      {countTicks, 60, "frames/ticks"}
-    }
-    
-    --Update the current event
-    if btn(2) and timerButtons.wait(100) then
-      eventInd = math.max(1, eventInd - 1)
-    elseif btn(3) and timerButtons.wait(100)  then
-      eventInd = math.min(#events, eventInd + 1)
-    end
-    
-    --Update the current time count
-    if btnp(4, 0, 10) and timer.count() == 0 then
-      timeCountsInd = timeCountsInd == 1 and 2 or 1
-    end
-    
-    --Internal use
-    timerButtons.event = not(btn(2) or btn(3))
-    
-    --Update the attributes of the timer
-    timer.event = events[eventInd][1]
-    timer.timeCount = timeCounts[timeCountsInd][1]
-    
-    --Show everthing: the event and the functions of the timer
-    print(
-      "<- Alter event ->",
-      x, y,
-      colorText
-    ) 
-    
-    print(
-      events[eventInd][2], 
-      x, y+yMargin, 
-      colorText,
-      false,
-      2
-    )
-    
-    print(
-      "Time in "..timeCounts[timeCountsInd][3]..": (Z to alter)", 
-      x, y+yMargin*3, 
-      colorText
-    )
-    printAlign(
-      string.format("%.2f", timer.count()), 
-      x2, y+yMargin*3, 
-      "left",
-      "botton",
-      colorText,
-      true
-    )
-      
-    print(
-      "Time >= 3 seconds: ", 
-      x, y+yMargin*4, 
-      colorText
-    )
-    printAlign(
-      tostring(timer.wait(timeCounts[timeCountsInd][2]*3)), 
-      x2, y+yMargin*4, 
-      "left",
-      "botton",
-      colorText
-    )
-    
-    print(
-      "6 seconds >= Time >= 3 seconds: ", 
-      x, y+yMargin*5, 
-      colorText
-    )
-    printAlign(
-      tostring(timer.wait(timeCounts[timeCountsInd][2]*3, timeCounts[timeCountsInd][2]*6)) , 
-      x2, y+yMargin*5, 
-      "left",
-      "botton",
-      colorText
-    )
-         
-    print(
-      "It is true every 1 second: ", 
-      x, y+yMargin*6, 
-      colorText
-    )
-    printAlign(
-      tostring(timer.waitFreq(timeCounts[timeCountsInd][2]*1)), 
-      x2, y+yMargin*6, 
-      "left",
-      "botton",
-      colorText
-    )
-    
-    print(
-      "True every 1 second and Time >= 3: ", 
-      x, y+yMargin*7, 
-      colorText
-    )
-    printAlign(
-      tostring(timer.waitFreq(timeCounts[timeCountsInd][2]*1) and timer.wait(timeCounts[timeCountsInd][2]*3)), 
-      x2, y+yMargin*7, 
-      "left",
-      "botton",
-      colorText
-    )
-    
-    print(
-      "Time < 4 seconds: ", 
-      x, y+yMargin*8, 
-      colorText
-    )
-    printAlign(
-      tostring(not(timer.wait(timeCounts[timeCountsInd][2]*4))), 
-      x2, y+yMargin*8, 
-      "left",
-      "botton",
-      colorText
-    )  
-    
-    --Increase the countTicks
-    countTicks = countTicks + 1
-  end
+  print(
+    "True every 1 second and Time >= 3: ", 
+    x, y+yMargin*7, 
+    colorText
+  )
+  printAlign(
+    tostring(timer.waitFreq(timeCounts[timeCountsInd][2]*1) and timer.wait(timeCounts[timeCountsInd][2]*3)), 
+    x2, y+yMargin*7, 
+    "left",
+    "botton",
+    colorText
+  )
   
+  print(
+    "Time < 4 seconds: ", 
+    x, y+yMargin*8, 
+    colorText
+  )
+  printAlign(
+    tostring(not(timer.wait(timeCounts[timeCountsInd][2]*4))), 
+    x2, y+yMargin*8, 
+    "left",
+    "botton",
+    colorText
+  )  
+  
+  --Increase the countTicks
+  countTicks = countTicks + 1
+end

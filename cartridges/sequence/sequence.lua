@@ -3,6 +3,8 @@
 -- desc:   a function that creates numeric sequences
 -- script: lua
 -- input: keyboard
+-- license: MIT
+-- github: https://github.com/JoaoPauloVF/My-TIC-Cartridges#readme
 --[[
 SUMMARY(ctrl+f and search for the chapter)
 

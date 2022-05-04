@@ -4,15 +4,17 @@
 -- script:  lua
 -- input:   keyboard, mouse
 -- palette: SWEETIE-16 https://github.com/nesbox/TIC-80/wiki/palette#sweetie-16
+-- license: MIT
+-- github: https://github.com/JoaoPauloVF/My-TIC-Cartridges#readme
 
---Constants and Variables : line 18
---Function getSequence()  : line 33
---Position Map            : line 49
---Circle Floating Class   : line 52
---Dot Floating Class      : line 105
---Initialization functions: line 120
---Instances Initialization: line 169
---TIC()                   : line 173
+--Constants and Variables : line 20
+--Function getSequence()  : line 35
+--Position Map            : line 51
+--Circle Floating Class   : line 54
+--Dot Floating Class      : line 107
+--Initialization functions: line 122
+--Instances Initialization: line 171
+--TIC()                   : line 175
 math.randomseed(tstamp()*10000)
 
 --CONSTANTS AND VARIABLES

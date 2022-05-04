@@ -2,7 +2,11 @@
 -- author: JoaoPauloVF
 -- desc:   Control a cute snake and paint a gray screen.
 -- script: lua
+-- input: mouse
 -- palette: SWEETIE-16
+-- license: MIT
+-- github: https://github.com/JoaoPauloVF/My-TIC-Cartridges#readme
+
 
 --[[
 SUMMARY(search for the term and press down):

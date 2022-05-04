@@ -3,9 +3,11 @@
 -- desc:   It's like the default print function, but with horizontal and vertical alignment params.
 -- script: lua
 -- palette: SWEETIE-16 https://github.com/nesbox/TIC-80/wiki/palette#sweetie-16
+-- license: MIT
+-- github: https://github.com/JoaoPauloVF/My-TIC-Cartridges#readme
 
--- Function description: line 38
--- Function code: line 105 to 122 
+-- Function description: line 40
+-- Function code: line 107 to 124 
 
 --Variables to show the function calls examples in the TIC(). It is not essential to use the function.
 SCREEN_W = 240

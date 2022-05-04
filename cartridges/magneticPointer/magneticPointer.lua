@@ -1,475 +1,381 @@
--- title:  Magnetic Pointer
+-- title:  Timer
 -- author: JoaoPauloVF
--- desc:   An interactive demo about repulsion and attraction forces
+-- desc:   a function that creates timers for events in execution time
 -- script: lua
--- input: mouse, keyboard
--- palette: SWEETIE-16 https://github.com/nesbox/TIC-80/wiki/palette#sweetie-16
+-- input: keyboard
+-- license: MIT
+-- github: https://github.com/JoaoPauloVF/My-TIC-Cartridges#readme
 
 --[[
-SUMMARY(search for the term and press down):
+SUMMARY(ctrl+f and search for the chapter)
 
---Constants
-
---Vector Function
---Vectors Operations Functions
-
---forceField function
---Particle function
-
---system Table
---subSystem Table
---Particle System Functions
-
---Initializations
-
---function TIC()
+ DESCRIPTION....................:-1-
+ TIMER OBJECT                   :-2-
+   TIMER VARIABLES AND FUNCTIONS:-2-1
+     VARIABLES..................:-2-2
+     FUNCTIONS                  :-2-3
+     DETAILS....................:-2-4
+ HOW TO USE                     :-3-
+ NOTES..........................:-4-
+ COMPLETE FUNCTION              :-5-
+ ONE-LINE FUNCTION..............:-5-1
 ]]--
 
---Constants
+--[[
+
+          -1---DESCRIPTION----
+
+ Returns a Timer object. Timer objects
+ can be associated with an event and 
+ return the time since this event 
+ becomes true. 
+ See more about Timer objects below.
+
+            ----newTimer----
+            
+ newTimer --> Timer object
+
+          -2---TIMER OBJECT----
+
+ The Timer Object is a table having 
+ variables and functions related to 
+ counting the time.
+
+ -2-1--TIMER VARIABLES AND FUNCTIONS----
+
+VARIABLES-2-2
+
+ event <-- boolean
+ timeCount <-- global time
+
+FUNCTIONS-2-3
+
+ count --> time
+ wait starting [ending=math.huge] --> true/false
+ waitFreq frequency --> true/false
+
+DETAILS-2-4
+
+ event: 
+    What the timer counts. This 
+    can be anything that results in a 
+    boolean, such as relational 
+    expressions, boolean expressions,
+    and functions like btn() and key(). 
+    If it isn't a boolean or it 
+    doesn't have any value, it is 
+    set false.
+
+ timeCount: 
+    How the timer counts. The default 
+    value is time(), but it can be any 
+    variable that works like a 
+    global timer.
+
+ count(): 
+    Returns the time according to the 
+    timeCount since the event 
+    becomes true.
+
+ wait(time): 
+    Returns true if the count is 
+    more or equal to some time.
+
+ wait(starting, ending): 
+    Returns true if the count is 
+    between the starting time and 
+    the ending time.
+
+ waitFreq(frequency): 
+    Returns true every cycle of 
+    some time amount(frequency).
+
+           -3---HOW TO USE----
+           
+ First, have the newTimer function
+ (see the SUMMARY) in your code.
+
+ After this, use it to create a new 
+ Timer object and to keep it in a 
+ variable:
+
+    timer = newTimer()
+
+ You can create how many Timer Objects
+ you want:
+
+    timer1 = newTimer()
+    timer2 = newTimer()
+    timer3 = newTimer()
+    timers = {
+      newTimer(), 
+      newTimer(), 
+      newTimer()
+    }
+
+ Now, in the TIC(), update the 
+ event and timeCount values. 
+ They must be update every frame:
+    
+    t = 0
+    function TIC()
+        ...
+        timer.event = btn(0)
+        timer.timeCount = t  --It can be time() too
+        ...
+        t = t + 1
+    end
+
+ Done! You already can use the count, 
+ wait, and waitFreq functions. Go to 
+ TIC() for seeing some examples.
+
+             -4---NOTES----
+
+ *I planned the Timer Object having
+ one event and one timeCount only.
+ This means that do something like:
+ 
+    timer = newTimer()
+    t = 0
+    function TIC()
+        ...
+        timer.event = btn(0)
+        timer.timeCount = t
+        ...
+        timer.event = key(48)
+        timer.timeCount = time()
+        ...
+        t = t + 1
+    end
+    
+ probably produces incoherent results
+ in its functions.
+
+ *There be one-timer for each event 
+ can be a mess in more complex 
+ projects. I could try making a 
+ simpler function to return the time 
+ of some event as 
+ timer(event, timeCount).
+]]--
+
+--5--COMPLETE FUNCTION----
+function newTimer()
+  local self = {}
+  
+  self.event = false
+  self.timeCount = false
+  
+  local current = 0        -- time in the current frame
+  local last = self.current-- time in the last frame
+  
+  self.count = function()
+    self.event = type(self.event) == "boolean" and self.event or false
+    
+    current = not(self.timeCount) and time() or self.timeCount 
+    last = self.event and last or current
+    
+    return current - last  --time interval
+  end
+  
+  self.wait = function(starting, ending)  
+    if not(starting) then return false end
+    
+    ending = ending or math.huge
+    
+    return self.count() >= math.abs(starting) and self.count() <= math.abs(ending)
+  end
+  
+  self.waitFreq = function(frequency)
+    if frequency == 0 then return false end
+    
+    return self.count()%(frequency*2) > frequency
+  end
+  
+   
+  return self
+end
+
+----ONE-LINE FUNCTION-5-1-
+--function newTimer()local a={};a.event=false;a.timeCount=false;local b=0;local c=a.b;a.count=function()a.event=type(a.event)=="boolean"and a.event or false;b=not(a.timeCount)and time()or a.timeCount;c=a.event and c or b;return b-c;end;a.wait=function(d, e)if not(d)then return false end;e=e or math.huge;return a.count()>=math.abs(d)and a.count()<=math.abs(e);end a.waitFreq=function(f)if f==0then return false end;return a.count()%(f*2)>f;end;return a;end
+
+
+--This is just another custom function
+--For more information: https://tic80.com/play?cart=2594
+local function printAlign(text, x, y, alignX, alignY, color, fixed, scale, smallFont)
+  local x = x or 0
+  local y = y or 0
+  local alignX = alignX or "right"
+  local alignY = alignY or "bottom"
+  local color = color or 15
+  local fixed = fixed or false
+  local scale = scale or 1
+  local smallFont = smallFont or false
+  
+  local font_h = 6 * scale
+  local font_w = print(text, 0, -font_h*scale, color, fixed, scale, smallFont)
+  
+  x = alignX=="right" and x or alignX=="center" and x - font_w//2 or alignX=="left" and x - font_w + 1*scale or x --if alignX is not any of the accepted values, x gets the default value from "right".
+  y = alignY=="bottom" and y or alignY=="middle" and y - font_h//2 or alignY=="top" and y - font_h + 1*scale or y --The same for alignY that y gets the value from "bottom".
+  
+  print(text, x, y, color, fixed, scale, smallFont)
+end
+
+
+--Initialize the Timer
+timer = newTimer()
+--Internal use
+timerButtons = newTimer()
+
+--Variable for count the ticks/frames
+countTicks = 0
+
+--Others Variables
 WIDTH = 240
 HEIGHT = 136
 
-UP = 0
-DOWN = 1
-Z = 4
+x = WIDTH * 0.05
+x2 = WIDTH * 0.95
+y = HEIGHT * 0.15
 
-background = 15
-subSystemLimit = 400
+yMargin = 10
 
-----Vector Function----
---[[
-  Returns a Vector object.
-  Vectors can represent positions, 
-  velocities, and accelerations.
+colorText = 12 --white
+background = 15 --dark gray
+
+eventInd = 1
+timeCountsInd = 1
+function TIC()
+		cls(background) 
   
-  You can see this on the Particle 
-  function.
-]]--
-function Vector(x, y, xOrigin, yOrigin)
-  local self = {}
+  mouseX, mouseY, mousePressed = mouse()
   
-  self.x = x or 0
-  self.y = y or 0
-  
-  local origin = {
-    x = xOrigin or 0,
-    y = yOrigin or 0
+  events = {
+    {mousePressed, "mousePressed"}, 
+    {btn(0), "btn(0)"}, 
+    {mouseX > WIDTH/2, "mouseX > 120"},
+    {key(48), "spacePressed"},
+    {not(btn(3)), "not(btn(3))"} 
+  }
+  timeCounts = {
+    {time(), 1000, "time()"},
+    {countTicks, 60, "frames/ticks"}
   }
   
+  --Update the current event
+  if btn(2) and timerButtons.wait(100) then
+    eventInd = math.max(1, eventInd - 1)
+  elseif btn(3) and timerButtons.wait(100)  then
+    eventInd = math.min(#events, eventInd + 1)
+  end
+  
+  --Update the current time count
+  if btnp(4, 0, 10) and timer.count() == 0 then
+    timeCountsInd = timeCountsInd == 1 and 2 or 1
+  end
+  
+  --Internal use
+  timerButtons.event = not(btn(2) or btn(3))
+  
+  --Update the attributes of the timer
+  timer.event = events[eventInd][1]
+  timer.timeCount = timeCounts[timeCountsInd][1]
+  
+  --Show everthing: the event and the functions of the timer
+  print(
+    "<- Alter event ->",
+    x, y,
+    colorText
+  ) 
+  
+  print(
+    events[eventInd][2], 
+    x, y+yMargin, 
+    colorText,
+    false,
+    2
+  )
+  
+  print(
+    "Time in "..timeCounts[timeCountsInd][3]..": (Z to alter)", 
+    x, y+yMargin*3, 
+    colorText
+  )
+  printAlign(
+    string.format("%.2f", timer.count()), 
+    x2, y+yMargin*3, 
+    "left",
+    "botton",
+    colorText,
+    true
+  )
     
-  self.getMag = function()
-    return math.sqrt(
-      (self.x-origin.x)^2 
-      + (self.y-origin.y)^2
-    )
-  end
+  print(
+    "Time >= 3 seconds: ", 
+    x, y+yMargin*4, 
+    colorText
+  )
+  printAlign(
+    tostring(timer.wait(timeCounts[timeCountsInd][2]*3)), 
+    x2, y+yMargin*4, 
+    "left",
+    "botton",
+    colorText
+  )
   
-  self.normalize = function()
-    local mag = self.getMag()
-    if mag == 0 then mag = 1 end
-    self.mult(1/mag)
-  end
+  print(
+    "6 seconds >= Time >= 3 seconds: ", 
+    x, y+yMargin*5, 
+    colorText
+  )
+  printAlign(
+    tostring(timer.wait(timeCounts[timeCountsInd][2]*3, timeCounts[timeCountsInd][2]*6)) , 
+    x2, y+yMargin*5, 
+    "left",
+    "botton",
+    colorText
+  )
+       
+  print(
+    "It is true every 1 second: ", 
+    x, y+yMargin*6, 
+    colorText
+  )
+  printAlign(
+    tostring(timer.waitFreq(timeCounts[timeCountsInd][2]*1)), 
+    x2, y+yMargin*6, 
+    "left",
+    "botton",
+    colorText
+  )
   
-  self.setMag = function(value)
-    self.normalize()
-    
-    self.mult(value)
-  end
+  print(
+    "True every 1 second and Time >= 3: ", 
+    x, y+yMargin*7, 
+    colorText
+  )
+  printAlign(
+    tostring(timer.waitFreq(timeCounts[timeCountsInd][2]*1) and timer.wait(timeCounts[timeCountsInd][2]*3)), 
+    x2, y+yMargin*7, 
+    "left",
+    "botton",
+    colorText
+  )
   
-  self.add = function(vector)
-    self.x = self.x + vector.x
-    self.y = self.y + vector.y
-  end
+  print(
+    "Time < 4 seconds: ", 
+    x, y+yMargin*8, 
+    colorText
+  )
+  printAlign(
+    tostring(not(timer.wait(timeCounts[timeCountsInd][2]*4))), 
+    x2, y+yMargin*8, 
+    "left",
+    "botton",
+    colorText
+  )  
   
-  self.mult = function(scalar)
-    self.x = self.x * scalar
-    self.y = self.y * scalar
-  end
-  
-  self.limit = function(scalar)
-    self.setMag(math.min(scalar, self.getMag(origin)))
-  end
-  
-  return self
-end
-----Vectors Operations Functions----
---[[
-  These functions return a new vector 
-  from other vectors.
-]]--
-function sumVectors(...)
-  local sumX = 0
-  local sumY = 0
-  for k, vector in ipairs{...} do
-    sumX = sumX + vector.x
-    sumY = sumY + vector.y
-  end
-    
-  return Vector(sumX, sumY)
-end
-
-function subVectors(v1, v2)
-  return Vector(v1.x-v2.x, v1.y-v2.y)
-end
-
-function multVector(v, value)
-  return Vector(v.x*value, v.y*value)
-end
-
-function divVector(v, value)
-  return Vector(v.x/value, v.y/value)
-end
-
-----forceField function----
---[[
-  Returns a force field object.
-  
-  This force field is controlled 
-  by the mouse: Its position depends 
-  on the mouse pointer and its state
-  (if it attracts or repulses) depends
-  on which mouse button is pressed.
-]]--
-function forceField(radius, forceMag, palette)
-  local self = {}
-  
-  self.pos = Vector(mouse())
-  self.radius = radius or 10
-  self.forceMag = forceMag or 1
-  
-  self.palette = palette or {none=13, attraction=2, repulsion=10}
-  self.color = self.palette["none"]
-  
-  self.state = "none"
-  local forceR = 0
-  
-  local minRadius, maxRadius = 1, HEIGHT*0.5
-  
-  self.update = function()
-    local mx, my, left, middle, right, scrollX, scrollY = mouse()
-    
-    self.pos.x = mx
-    self.pos.y = my
-    
-    --Update radius
-    self.radius = math.min(maxRadius, math.max(minRadius, self.radius + scrollY))
-    
-    --Update field state
-    if left then
-      self.state = "attraction"
-    elseif right then
-      self.state = "repulsion"
-    else
-      self.state = "none"
-    end
-    
-    --Update the circle radius used for the force animation.
-    if self.state == "none" then
-      forceR = 0
-    elseif self.state == "attraction" then
-      forceR = forceR - self.forceMag
-      if forceR <= 0 then
-        forceR = self.radius
-      end
-    else--repulsion
-      forceR = forceR + self.forceMag
-      if forceR >= self.radius then
-        forceR = 0
-      end
-    end
-    
-    self.color = self.palette[self.state]
-  end
-  
-  self.render = function()
-    --render force
-    circb(
-      self.pos.x, self.pos.y,
-      forceR,
-      self.color
-    )
-    --render field border
-    circb(
-      self.pos.x, self.pos.y,
-      self.radius,
-      self.color
-    )
-  end
-  return self
-end
-
-----Particle function----
---[[
-  Creates a particle. Particles are 
-  the "balls" and the "dust" that 
-  you interact to.
-  
-  They react to the force field and 
-  the screen edges.
-]]--
-function Particle(settings)
-  local self = {}
-  
-  self.life = settings.life
-  
-  self.pos = settings.pos or Vector()
-  self.radius = settings.radius or 4
-  self.mass = settings.mass or 4
-  self.maxSpeed = settings.maxSpeed or 2
-  self.color = settings.color or 12
-  self.borderColor = settings.borderColor or 12
-  self.forceField = settings.forceField
-  
-  self.vel = Vector()
-  self.acc = Vector()
-  
-  local fieldF = Vector()
-  local friction = Vector()
-  local frictionC = 0.02
-  
-  local applyForces = function(...)
-    local fList = {}
-    for index, force in ipairs{...} do
-      fList[index] = divVector(force, self.mass)
-    end
-    
-    self.acc = sumVectors(table.unpack(fList))
-  end
-  
-  local interactToField = function()
-    local attVector = subVectors(self.forceField.pos, self.pos)
-    local dist = attVector.getMag()
-    
-    attVector.setMag(self.forceField.forceMag)
-    
-    if dist <= self.forceField.radius + self.radius then
-		    if self.forceField.state == "none" then
-		      fieldF.setMag(0)
-		    elseif self.forceField.state == "attraction" then
-		      fieldF = multVector(attVector, 1)
-		    else--repulsion
-		      fieldF = multVector(attVector, -1)
-		    end
-				end
-  end
-  
-  local interactToEdges = function()
-    local minX, minY = self.radius, self.radius
-    local maxX, maxY = WIDTH - self.radius, HEIGHT - self.radius
-    
-    local impactLoss = self.mass * frictionC
-    
-    if self.pos.x < minX or self.pos.x > maxX then
-      self.pos.x = math.min(maxX, math.max(minX, self.pos.x))
-      
-      self.vel.x = -self.vel.x
-      fieldF.x = -fieldF.x
-      
-      self.vel.mult(1-impactLoss)
-      fieldF.mult(1-impactLoss)
-    end
-    if self.pos.y < minY or self.pos.y > maxY then
-      self.pos.y = math.min(maxY, math.max(minY, self.pos.y))
-      
-      self.vel.y = -self.vel.y
-      fieldF.y = -fieldF.y
-      
-      self.vel.mult(1-impactLoss)
-      fieldF.mult(1-impactLoss)
-    end
-  end
-  
-  self.update = function()
-    if self.life then
-      self.life = self.life-1
-    end
-    
-    interactToField()
-    interactToEdges()
-    
-    friction = multVector(self.vel, -1*frictionC*self.mass)
-    
-    applyForces(fieldF, friction)
-    
-    self.vel.add(self.acc)
-    self.vel.limit(self.maxSpeed)
-    self.pos.add(self.vel)
-  end
-  
-  self.render = function()
-    circ(
-      self.pos.x, self.pos.y,
-      self.radius+1,
-      self.borderColor
-    )
-    circ(
-      self.pos.x, self.pos.y,
-      self.radius,
-      self.color
-    )
-  end
-  
-  return self
-end
-
-----system Table----
---[[
-  This table holds all the balls
-  (the big particles).
-]]--
-system = {}
-
-----subSystem Table----
---[[
-  This table holds all the dust particles
-  (the small ones).
-]]--
-subSystem = {}
-
-----Particle System Functions----
---[[
-  These functions manage the update 
-  and render of all the particles.
-]]--
-function newSystem(settings)
-    local system = {}
-		
-    local width = settings.width or 2
-    local height = settings.height or 2
-    local palette = settings.palette
-    local maxSpeed = settings.maxSpeed
-    local borderColor = settings.borderColor
-		
-    local firstColor = math.random(0,3)
-	for i=1, width do
-	  for j=1, height do
-        local x = i*(WIDTH/(width+1))
-        local y = j*(HEIGHT/(height+1))
-						
-        local colorIndex = ((i+j+firstColor)%(#palette))+1
-        local color = palette[colorIndex]
-		    
-        local mass = math.random(2, 4)
-        local radius = 2*(((i*j)%2)+1)
-		    
-		local p = Particle({
-		  pos = Vector(x, y), 
-		  radius = radius, 
-		  mass = mass, 
-		  maxSpeed = maxSpeed, 
-		  color = color, 
-		  borderColor = colorBorder, 
-		  forceField = mouseField
-		})
-		    
-        table.insert(system, p)
-      end
-    end
-		
-    return system
-end
-
-function updateSystem(system, subSystem, subSystemLimit)
-  --Update system table
-  for _, p in pairs(system) do
-    insertSubParticle(subSystem, subSystemLimit, p)
-    p.update()
-  end
-  
-  --Update subSystem table
-  for _, subP in pairs(subSystem) do
-    subP.update()
-  end
-  
-  cleanSubSystem(subSystem)
-end
-
-function renderSystem(system, subSystem)
-  for _, subP in pairs(subSystem) do
-    subP.render()
-  end
-  for _, p in pairs(system) do
-    p.render()
-  end
-end
---subSystem functions
-function insertSubParticle(subSystem, subSystemLimit, p)
-  local vel = p.vel.getMag()
-  if #subSystem < subSystemLimit and vel > 0 and time()%(3000/vel) < 10 then
-    local life = math.random(180, 360)
-    
-    local subP = Particle({
-      pos = multVector(p.pos, 1), 
-      radius = 0, 
-      mass = 0.1, 
-      maxSpeed = p.maxSpeed*2, 
-      borderColor = p.color, 
-      forceField = mouseField,
-      life = life
-    })
-    
-    table.insert(subSystem, subP)
-  end
-end
-function cleanSubSystem(subSystem)
-  for index, subP in pairs(subSystem) do
-    if subP.life < 0 then
-      table.remove(subSystem, index)
-    end
-  end
-end
-
-
-----Initializations----
-
---forceField initialization
-mouseForceMag = 0.2
-maxForceMag = 1
-minForceMag = 0.1
-mouseField = forceField(20, mouseForceMag)
-
---system variables
-systemW = 17
-systemH = 9
-palette = {3, 5, 9, 6, 4, 10, 7, 11}
-
---system initialization
-system = newSystem({
-  width = systemW,
-  height = systemH,
-  palette = palette,
-  maxSpeed = 4,
-  borderColor = 12
-})
-
-
-function TIC()
-  --Check reset
-  if btnp(Z, 0, 30) then
-    system = newSystem({
-      width = systemW,
-      height = systemH,
-      palette = palette,
-      maxSpeed = 4,
-      borderColor = 12
-    })
-    
-    subSystem = {}
-  end
-  --Update force magnitude
-  if btnp(UP, 0, 10) then
-    mouseForceMag = math.min(maxForceMag, mouseForceMag+0.1)
-  end
-  if btnp(DOWN, 0, 10) then
-    mouseForceMag = math.max(minForceMag, mouseForceMag-0.1)
-  end
-  mouseField.forceMag = mouseForceMag
-  
-  
-  mouseField.update()
-  updateSystem(system, subSystem, subSystemLimit)
-  
-  cls(background)
-  renderSystem(system, subSystem)
-  mouseField.render()
+  --Increase the countTicks
+  countTicks = countTicks + 1
 end
