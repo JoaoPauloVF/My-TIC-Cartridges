@@ -2,7 +2,7 @@
 
 My small projects made in the [TIC-80][TIC-80 site] fantasy console.
 
-![mini cartridge demo](cartridges/floatingCircles/demoResized.gif) ![mini cartridge demo](cartridges/Timer/demoResized.gif) ![mini cartridge demo](cartridges/PainterSnake/demoResized.gif) ![mini cartridge demo](cartridges/PrintAlign/coverResized.png) ![mini cartridge demo](cartridges/magneticPointer/demoResized.gif) ![mini cartridge demo](cartridges/sequence/demoResized.gif) ![mini cartridge demo](cartridges/Button/demoResized.gif)
+![mini cartridge demo](cartridges/floatingCircles/demoResized.gif) ![mini cartridge demo](cartridges/Timer/demoResized.gif) ![mini cartridge demo](cartridges/PainterSnake/demoResized.gif) ![mini cartridge demo](cartridges/PrintAlign/coverResized.png) ![mini cartridge demo](cartridges/magneticPointer/demoResized.gif) ![mini cartridge demo](cartridges/sequence/demoResized.gif) ![mini cartridge demo](cartridges/ModPatterns/demoResized.gif) ![mini cartridge demo](cartridges/Button/demoResized.gif)
 
 ## Projects List
 
@@ -13,6 +13,7 @@ Cartridges focused on fun visual effects:
 * [Floating Circles](cartridges/floatingCircles/)
 * [Painter Snake](cartridges/PainterSnake/)
 * [Magnetic Pointer](cartridges/magneticPointer/)
+* [Mod Patterns](https://github.com/JoaoPauloVF/Mod-Patterns#mod-patterns)
 
 ### Functions
 
